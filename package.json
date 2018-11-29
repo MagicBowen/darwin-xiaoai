@@ -1,0 +1,38 @@
+{
+    "name": "darwin-xiaoai",
+    "version": "0.1.0",
+    "description": "connect darwin and xiaoai",
+    "author": "magicbowen <e.wangbo@gmail.com>",
+    "license": "MIT",
+    "homepage": "https://github.com/MagicBowen/darwin-xiaoai",
+    "main": "server.js",
+    "scripts": {
+        "test": "mocha"
+    },
+    "engines": {
+        "node": ">=8.11.1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/MagicBowen/darwin-xiaoai"
+    },
+    "bugs": {
+        "url": "https://github.com/MagicBowen/darwin-xiaoai/issues"
+    },
+    "dependencies": {
+        "request": "^2.87.0",
+        "debug": "^3.1.0",
+        "aixbot": "^1.1.0",
+        "darwin-sdk": "^0.1.5"
+    },
+    "devDependencies": {
+        "mocha": "^5.2.0",
+        "deep-equal": "^1.0.1",
+        "should": "^13.2.1"
+    },
+    "keywords": [
+        "darwin",
+        "xiaoai",
+        "bot framework"
+    ]
+}
