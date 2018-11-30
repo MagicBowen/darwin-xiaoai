@@ -23,7 +23,7 @@
         "request": "^2.87.0",
         "debug": "^3.1.0",
         "aixbot": "^1.1.0",
-        "darwin-sdk": "^0.1.9"
+        "darwin-sdk": "^0.2.1"
     },
     "devDependencies": {
         "mocha": "^5.2.0",
