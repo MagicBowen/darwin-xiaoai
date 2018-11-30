@@ -49,6 +49,12 @@ function buildAixbotReply(ctx, chatbotReply) {
 }
 
 aixbot.use(async (ctx, next) => {
+    ctx.getUserId = () => {
+        return 'darwin_' + ctx.request.user.user_id
+    }
+})
+
+aixbot.use(async (ctx, next) => {
     const agent = getAgentName(ctx.request.appId)
     const chatbot = agent ? new Chatbot(config.chatbot_url, agent, config.source) : null
     ctx.handleEvent = async (event) => {
@@ -67,30 +73,30 @@ aixbot.use(async (ctx, next) => {
 })
 
 aixbot.onEvent('noResponse', async (ctx) =>{
-    await ctx.handleEvent(new NoResponseEvent(ctx.request.user.user_id))
+    await ctx.handleEvent(new NoResponseEvent(ctx.getUserId()))
 })
 
 aixbot.onEvent('enterSkill', async (ctx) => {
-    await ctx.handleEvent(new OpenSkillEvent(ctx.request.user.user_id))
+    await ctx.handleEvent(new OpenSkillEvent(ctx.getUserId()))
 })
 
 aixbot.onEvent('quitSkill', async (ctx) => {
-    await ctx.handleEvent(new QuitSkillEvent(ctx.request.user.user_id))
+    await ctx.handleEvent(new QuitSkillEvent(ctx.getUserId()))
 })
 
 aixbot.onEvent('inSkill', async (ctx) => {
-    await ctx.handleEvent(new Query(ctx.request.user.user_id, ctx.request.query))
+    await ctx.handleEvent(new Query(ctx.getUserId(), ctx.request.query))
 })
 
 aixbot.onEvent('recordFinish', async (ctx) => {
-    const userId = ctx.request.user.user_id
+    const userId = ctx.getUserId()
     const asrText = ctx.request.eventProperty.asr_text
     const mediaId = ctx.request.eventProperty.msg_file_id
     await ctx.handleEvent(new RecordFinishEvent(userId, mediaId, asrText));
 });
 
 aixbot.onEvent('recordFail', async (ctx) => {
-    await ctx.handleEvent(new RecordFailEvent(ctx.request.user.user_id));
+    await ctx.handleEvent(new RecordFailEvent(ctx.getUserId()));
 });
 
 aixbot.onError((err, ctx) => {
