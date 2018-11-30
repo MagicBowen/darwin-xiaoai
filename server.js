@@ -52,6 +52,7 @@ aixbot.use(async (ctx, next) => {
     ctx.getUserId = () => {
         return 'darwin_' + ctx.request.user.user_id
     }
+    await next()
 })
 
 aixbot.use(async (ctx, next) => {
