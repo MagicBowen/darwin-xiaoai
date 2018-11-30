@@ -1,1 +1,1 @@
-Project for connecting Darwin and Aligenie.
+Project for connecting Darwin and XiaoAi.
