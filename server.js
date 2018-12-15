@@ -5,6 +5,8 @@ const QuitSkillEvent = require('darwin-sdk').QuitSkillEvent
 const NoResponseEvent = require('darwin-sdk').NoResponseEvent
 const RecordFinishEvent = require('darwin-sdk').RecordFinishEvent
 const RecordFailEvent = require('darwin-sdk').RecordFailEvent
+const PlayFinishEvent = require('darwin-sdk').PlayFinishEvent
+const Response = require('aixbot').Response
 const AixBot = require('aixbot')
 const config = require('./config')
 
@@ -27,10 +29,24 @@ function buildAixbotReply(ctx, chatbotReply) {
     if (!instructs) return ctx.query(chatbotReply.getReply())
 
     let quitSkill = false
-    let response = ctx.directiveTts(chatbotReply.getReply())
+    let text = chatbotReply.getReply()
+    let response = null
+    //response = ctx.directiveTts(text)
+    
+    if (text.length > 0 ) {
+        response = ctx.directiveTts(text)
+    }
+    else{
+        response = ctx.response
+    }
+    
+    let flag = true
+
     for (let instruct of instructs) {
         if(instruct.type === "play-audio") {
             response.directiveAudio(instruct['url'])
+            response.registerPlayFinishing()
+            flag = false
         }
         if(instruct.type === "play-record") {
             response.directiveRecord(instruct['mediaId'])
@@ -45,7 +61,7 @@ function buildAixbotReply(ctx, chatbotReply) {
             quitSkill = true
         }
     }
-    return quitSkill ? response.closeSession() : response.wait()
+    return quitSkill ? response.closeSession() : response.openMic(flag)
 }
 
 aixbot.use(async (ctx, next) => {
@@ -78,6 +94,7 @@ aixbot.onEvent('noResponse', async (ctx) =>{
 })
 
 aixbot.onEvent('enterSkill', async (ctx) => {
+    console.log('onEvent enterSkill')
     await ctx.handleEvent(new OpenSkillEvent(ctx.getUserId()))
 })
 
@@ -98,6 +115,11 @@ aixbot.onEvent('recordFinish', async (ctx) => {
 
 aixbot.onEvent('recordFail', async (ctx) => {
     await ctx.handleEvent(new RecordFailEvent(ctx.getUserId()));
+});
+
+aixbot.onEvent('playFinishing', async (ctx) => {
+    console.log('onEvent playFinishing')
+    await ctx.handleEvent(new PlayFinishEvent(ctx.getUserId(), ctx.request.quer));
 });
 
 aixbot.onError((err, ctx) => {
